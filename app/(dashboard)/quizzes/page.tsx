@@ -16,8 +16,11 @@ export default function Quizzes() {
 
   useEffect(() => {
     axios.get('/api').then((response) => {
+
       setQuizzes(response.data.data);
-    });
+    }).catch((error) => {
+      console.log(error);
+    })
   }, []);
 
 
@@ -26,7 +29,7 @@ export default function Quizzes() {
     return `linear-gradient(135deg, ${gradient})`;
   };
 
-  return (
+  return quizzes && (
     <>
       <h2 className="text-2xl font-bold mb-12">Available Quizzes</h2>
       <div className="grid grid-cols-4 gap-4">
@@ -37,7 +40,7 @@ export default function Quizzes() {
               <CardDescription>{quiz.shortDescription}</CardDescription>
             </CardHeader>
             <CardFooter>
-              <Link href={`/quiz/${index + 1}`} className="bg-blue-500 rounded-lg px-2 py-1 text-white">
+              <Link href={`/quiz/${index + 1}`} className="border hover:bg-white hover:text-black rounded-lg px-2 py-1 text-white">
                 Start Quiz
               </Link>
             </CardFooter>
