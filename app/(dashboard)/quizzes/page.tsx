@@ -8,7 +8,7 @@ import Link from "next/link"
 interface Quiz {
   title: string;
   shortDescription: string;
-  gradient: string
+  gradient: string;
 }
 
 export default function Quizzes() {

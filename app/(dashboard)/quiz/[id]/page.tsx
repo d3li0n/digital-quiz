@@ -10,11 +10,15 @@ import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import Link from "next/link";
 
+interface Answer {
+  answer: string;
+  isCorrect: boolean;
+}
+
 interface Question {
   title: string;
   video_url?: string;
-  options?: string[];
-  correct_option?: number;
+  answers: Answer[],
   image_url?: string;
 }
 
@@ -26,6 +30,7 @@ export default function Quiz() {
   const [questionsLength, setQuestionsLength] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
+  const [answersBlocked, setAnswersBlocked] = useState(false);
 
   useEffect(() => {
     axios.get(`/api/quiz/${id}/question/${question}`).then((response) => {
@@ -41,13 +46,15 @@ export default function Quiz() {
     axios.get(`/api/quiz/${id}/question/${questionId}`).then((response) => {
       setQuiz(response.data.question);
       setQuestion(questionId);
+      setAnswersBlocked(false);
     }).catch((error) => {
       console.log(error);
     });
   }
 
   const handleAnswer = (answer: number) => {
-    if (answer === quiz?.correct_option) {
+    setAnswersBlocked(true);
+    if (answer === quiz?.answers.findIndex((a) => a.isCorrect)) {
       setCorrectAnswers(correctAnswers + 1);
       toast({
         title: "Correct Answer",
@@ -66,83 +73,122 @@ export default function Quiz() {
     }
   }
 
-  return quiz && (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle>{quiz.title}</CardTitle>
-        </CardHeader>
+  if (quiz && questionsLength && questionsLength > 0) {
+    return quiz && (
+      <>
+        <Card>
+          <CardHeader>
+            <CardTitle>{quiz.title}</CardTitle>
+          </CardHeader>
 
-        <CardContent>
-          {quiz.video_url && (
-            <iframe src={quiz.video_url} className="w-full aspect-[16/8] rounded-lg shadow-lg" />
-          )}
+          {questionsLength > 0 && <>
+            <CardContent>
+              {quiz.video_url && (
+                <iframe src={quiz.video_url} className="w-full aspect-[16/8] rounded-lg shadow-lg" />
+              )}
 
-          {quiz.image_url && (
-            <Image src={quiz.image_url} alt={quiz.title} width={500} height={500} className="rounded-lg shadow-lg mx-auto my-5" />
-          )}
+              {quiz.image_url && (
+                <Image src={quiz.image_url} alt={quiz.title} width={500} height={500} className="rounded-lg shadow-lg mx-auto my-5" />
+              )}
 
-          {!quiz.video_url && (
-            <div className="grid grid-rows-2 grid-flow-col gap-4">
-              {quiz.options?.map((option, index) => (
-                <Button key={index} className="block text-left border rounded-lg border-black" onClick={() => handleAnswer(index)}>
-                  {option}
-                </Button>
-              ))}
-            </div>
-          )}
-        </CardContent>
+              {!quiz.video_url && (
+                <div className="grid grid-rows-2 grid-flow-col gap-4">
+                  {quiz.answers?.map((answer, index) => (
+                    <Button
+                      key={index}
+                      className="block text-left border rounded-lg border-black"
+                      onClick={() => handleAnswer(index)} disabled={answersBlocked}
+                    >
+                      {answer.answer}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </CardContent>
 
-        <CardFooter className="space-x-4 justify-center">
-          {question >= 1 && (
-            <>
-              <Button className="border rounded-lg border-black" onClick={() => getQuestion(question - 1)}>
-                Previous Question
-              </Button>
-              <p>
-                Question {question} of {questionsLength - 1}
-              </p>
-            </>
-          )}
-
-          <div>
-            {question === 0 && (
-              <Button className="border rounded-lg border-black" onClick={() => getQuestion(question + 1)}>
-                Start Quiz
-              </Button>
-            )}
-            {question !== 0 && question < questionsLength - 1 && (
-              <Button className="border rounded-lg border-black">
-                Next Question &gt;
-              </Button>
-            )}
-            {question + 1 === questionsLength && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="border rounded-lg border-black" disabled={correctAnswers + wrongAnswers != questionsLength - 1}>
-                    Complete Quiz
+            <CardFooter className="space-x-4 justify-center">
+              {question >= 1 && (
+                <>
+                  <Button className="border rounded-lg border-black" onClick={() => getQuestion(question - 1)}>
+                    Previous Question
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-white">
-                  <DialogHeader>
-                    <DialogTitle>Congrats on Completing this Quiz</DialogTitle>
-                    <DialogDescription style={{ margin: "1.25rem 0" }} className="text-center">
-                      <Image src="/cookie.jpg" alt="Cookie" width={200} height={200} className="mx-auto mb-5" />
-                      You got <strong>{correctAnswers}</strong> correct and <strong>{wrongAnswers}</strong> wrong answers.
-                    </DialogDescription>
+                  <p>
+                    Question {question} of {questionsLength - 1}
+                  </p>
+                </>
+              )}
 
-                    <DialogFooter>
-                      <Link href="/quizzes" className="border rounded-lg border-black p-1 mx-auto text-center w-1/2">
-                        Go back to Quizzes
-                      </Link>
-                    </DialogFooter>
-                  </DialogHeader>
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
-        </CardFooter>
-      </Card>
-    </>
-  )
+              <div>
+                {question === 0 && (
+                  <Button className="border rounded-lg border-black" onClick={() => getQuestion(question + 1)}>
+                    Start Quiz
+                  </Button>
+                )}
+                {question !== 0 && question < questionsLength - 1 && (
+                  <Button className="border rounded-lg border-black" onClick={() => getQuestion(question + 1)} disabled={!answersBlocked} >
+                    Next Question &gt;
+                  </Button>
+                )}
+                {question + 1 === questionsLength && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button className="border rounded-lg border-black" disabled={correctAnswers + wrongAnswers != questionsLength - 1}>
+                        Complete Quiz
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-white">
+                      <DialogHeader>
+                        <DialogTitle>Congrats on Completing this Quiz</DialogTitle>
+                        <DialogDescription style={{ margin: "1.25rem 0" }} className="text-center">
+                          <Image src="/cookie.jpg" alt="Cookie" width={200} height={200} className="mx-auto mb-5" />
+                          You got <strong>{correctAnswers}</strong> correct and <strong>{wrongAnswers}</strong> wrong answers.
+                        </DialogDescription>
+
+                        <DialogFooter>
+                          <Link href="/quizzes" className="border rounded-lg border-black p-1 mx-auto text-center w-1/2">
+                            Go back to Quizzes
+                          </Link>
+                        </DialogFooter>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
+            </CardFooter>
+          </>}
+        </Card>
+      </>
+    )
+  } else if (questionsLength == 0) {
+    return (
+      <>
+        <Card>
+          <CardHeader>
+            <CardTitle>Quiz Not Found</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-center">The quiz you are looking for does not exist.</p>
+          </CardContent>
+          <CardFooter>
+            <Link href="/quizzes" className="border rounded-lg border-black p-1 mx-auto text-center w-1/2">
+              Go back to Quizzes
+            </Link>
+          </CardFooter>
+        </Card>
+      </>
+    )
+  } else {
+    return (
+      <>
+        <Card>
+          <CardHeader>
+            <CardTitle>Loading...</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-center">Please wait while we load the quiz.</p>
+          </CardContent>
+        </Card>
+      </>
+    )
+  }
 }

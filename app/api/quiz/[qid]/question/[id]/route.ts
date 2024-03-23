@@ -1,13 +1,32 @@
-import fs from 'fs';
-import path from 'path';
+import prisma from "@/lib/prisma";
 
-const getQuestion = (qid: string, id: number) => {
+const getQuestion = async (qid: string, id: number) => {
   try {
-    const quizQuestions = fs.readFileSync(path.join(process.cwd(), 'public', 'quizzes', `${qid}.json`), 'utf-8');
-    const quiz = JSON.parse(quizQuestions);
-    const question = quiz;
-
-    return [question[id], quiz.length];
+    const response = await prisma.quiz.findUnique({
+      where: {
+        id: parseInt(qid),
+        published: true
+      },
+      select: {
+        questions: {
+          select: {
+            id: true,
+            title: true,
+            video_url: true,
+            image_url: true,
+            answers: {
+              select: {
+                id: true,
+                answer: true,
+                isCorrect: true
+              }
+            }
+          }
+        }
+      }
+    });
+    const question = response?.questions[id];
+    return [question, response?.questions.length];
   } catch {
     return [null, 0];
   }
@@ -20,7 +39,7 @@ export async function GET(req: Request) {
   const qid = splitPathname[3];
   const id = splitPathname[5];
 
-  const [question, questionsLength] = getQuestion(qid as string, parseInt(id as string));
+  const [question, questionsLength] = await getQuestion(qid as string, parseInt(id as string));
 
   return Response.json({ question, numOfQuestions: questionsLength });
 }
