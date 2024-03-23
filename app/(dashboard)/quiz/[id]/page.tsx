@@ -68,7 +68,7 @@ export default function Quiz() {
         title: "Wrong Answer",
         description: "You got it wrong!",
         className: "bg-red-500 text-white",
-        duration: 1500
+        duration: 1750
       });
     }
   }
@@ -159,24 +159,6 @@ export default function Quiz() {
         </Card>
       </>
     )
-  } else if (questionsLength == 0) {
-    return (
-      <>
-        <Card>
-          <CardHeader>
-            <CardTitle>Quiz Not Found</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-center">The quiz you are looking for does not exist.</p>
-          </CardContent>
-          <CardFooter>
-            <Link href="/quizzes" className="border rounded-lg border-black p-1 mx-auto text-center w-1/2">
-              Go back to Quizzes
-            </Link>
-          </CardFooter>
-        </Card>
-      </>
-    )
   } else {
     return (
       <>
@@ -184,9 +166,17 @@ export default function Quiz() {
           <CardHeader>
             <CardTitle>Loading...</CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-center">Please wait while we load the quiz.</p>
+          <CardContent className="mx-auto sm:w-max md:w-1/2">
+            <p className="text-center my-5">
+              Please wait while we load the quiz. <br /><br />If this takes too long, this quiz might not exist.
+            </p>
           </CardContent>
+
+          <CardFooter className="space-x-4 justify-center">
+            <Link href="/quizzes" className="border rounded-lg border-black p-1 mx-auto text-center md:w-2/6 sm:w-max">
+              Go back to Quizzes
+            </Link>
+          </CardFooter>
         </Card>
       </>
     )
