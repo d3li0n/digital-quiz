@@ -5,12 +5,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import Link from "next/link"
 import { LoaderIcon } from 'lucide-react';
-
-interface Quiz {
-  title: string;
-  shortDescription: string;
-  gradient: string;
-}
+import { Quiz } from '@/common/types';
 
 export default function Quizzes() {
   const [quizzes, setQuizzes] = useState([]);
