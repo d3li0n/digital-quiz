@@ -9,18 +9,7 @@ import Image from "next/image";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import Link from "next/link";
-
-interface Answer {
-  answer: string;
-  isCorrect: boolean;
-}
-
-interface Question {
-  title: string;
-  video_url?: string;
-  answers: Answer[],
-  image_url?: string;
-}
+import { Question } from "@/common/types";
 
 export default function Quiz() {
   const { id } = useParams();
@@ -76,7 +65,7 @@ export default function Quiz() {
   if (quiz && questionsLength && questionsLength > 0) {
     return quiz && (
       <>
-        <Card>
+        <Card className="bg-white">
           <CardHeader>
             <CardTitle>{quiz.title}</CardTitle>
           </CardHeader>
@@ -84,7 +73,7 @@ export default function Quiz() {
           {questionsLength > 0 && <>
             <CardContent>
               {quiz.video_url && (
-                <iframe src={quiz.video_url} className="w-full aspect-[16/8] rounded-lg shadow-lg" />
+                <iframe src={quiz.video_url} className="w-full aspect-[16/8] rounded-lg shadow-lg" title="Video before quiz" />
               )}
 
               {quiz.image_url && (
@@ -162,7 +151,7 @@ export default function Quiz() {
   } else {
     return (
       <>
-        <Card>
+        <Card className="bg-white">
           <CardHeader>
             <CardTitle>Loading...</CardTitle>
           </CardHeader>
