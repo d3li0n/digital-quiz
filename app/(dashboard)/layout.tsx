@@ -26,6 +26,11 @@ export default function QuizzesLayout({
                 </Link>
               </li>
               <li>
+                <Link href="/vote" className="block p-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent">
+                  Vote
+                </Link>
+              </li>
+              <li>
                 <Link href="https://github.com/d3li0n/digital-quiz" className="text-white bg-black focus:outline-none font-medium rounded-lg text-sm p-3 text-center flex items-center">
                   <span className="mr-2"><FaGithub /></span>
                   <span>View on GitHub</span>

@@ -17,7 +17,7 @@ const formSchema = z.object({
   }),
 })
 
-export default function New() {
+export default function NewQuizPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,6 +72,7 @@ export default function New() {
                   </>
                 )}
               />
+              <div className='my-3'/>
 
               <Button type="submit">Submit</Button>
             </form>

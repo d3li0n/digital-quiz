@@ -16,6 +16,7 @@ model Quiz {
   gradient         String
   published        Boolean
   questions        Question[]
+  votes            Vote[]
 }
 
 model Question {
@@ -26,6 +27,12 @@ model Question {
   image_url   String?
   quiz        Quiz @relation(fields: [quizId], references: [id])
   quizId      Int
+}
+
+model Vote {
+  id         Int @id @default(autoincrement())
+  quiz       Quiz @relation(fields: [quizId], references: [id])
+  quizId     Int
 }
 
 model Answer {

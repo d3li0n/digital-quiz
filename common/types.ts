@@ -1,7 +1,9 @@
 export interface Quiz {
+  id: string;
   title: string;
   shortDescription: string;
   gradient: string;
+  questions: Question[];
 }
 
 export interface Answer {
