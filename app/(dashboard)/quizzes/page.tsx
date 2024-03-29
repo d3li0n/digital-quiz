@@ -34,7 +34,7 @@ export default function Quizzes() {
                 <CardDescription>{quiz.shortDescription}</CardDescription>
               </CardHeader>
               <CardFooter>
-                <Link href={`/quiz/${index + 1}`} className="border hover:bg-white hover:text-black rounded-lg px-2 py-1 text-white">
+                <Link href={`/quiz/${quiz.id}`} className="border hover:bg-white hover:text-black rounded-lg px-2 py-1 text-white">
                   Start Quiz
                 </Link>
               </CardFooter>
