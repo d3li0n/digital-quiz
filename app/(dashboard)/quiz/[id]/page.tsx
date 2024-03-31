@@ -90,7 +90,7 @@ export default function Quiz() {
                   {quiz.answers?.map((answer, index) => (
                     <Button
                       key={index}
-                      className="block text-left border rounded-lg border-black"
+                      className="block text-left border rounded-lg border-black text-pretty h-full"
                       onClick={() => handleAnswer(index)} disabled={answersBlocked}
                     >
                       {answer.answer}
@@ -100,7 +100,7 @@ export default function Quiz() {
               )}
             </CardContent>
 
-            <CardFooter className="space-x-4 justify-center">
+            <CardFooter className="justify-center max-sm:grid max-sm:space-y-4 max-sm:text-center md:space-x-4">
               {question >= 1 && (
                 <>
                   <Button
