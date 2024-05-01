@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ### Database
 
-This project uses latest version of [PostgreSQL](https://www.postgresql.org/) database via Docker container.
+This project uses the latest version of [PostgreSQL](https://www.postgresql.org/) database via Docker container.
 
 Before starting a container, you need to make the following changes:
 
@@ -15,17 +15,17 @@ Before starting a container, you need to make the following changes:
 
 #### Prisma Studio
 
-This project uses [Prisma](https://www.prisma.io/) to manager interaction with database. If you don't want to install external client to access database, you can use their UI studio by running
+This project uses [Prisma](https://www.prisma.io/) to manage interaction with the database. If you don't want to install the external client to access the database, you can use their UI studio by running
 
 ```sh
 npx prisma studio
 ```
 
-The application should automatically open the browser window where you can manager your database.
+The application should automatically open the browser window where you can manage your database.
 
 #### Migrations
 
-If you made any changes to `prisma/schema.prisma`, make sure to run migration, so changes are applied
+If you made any changes to `prisma/schema.prisma`, make sure to run migration so changes are applied:
 
 ```sh
 npx prisma migrate dev --name <NAME_OF_MIGRATION>
